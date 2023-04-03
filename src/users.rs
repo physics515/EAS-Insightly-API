@@ -58,7 +58,7 @@ pub struct User {
 
 	#[serde(rename = "PROFILE_ID")]
 	profile_id: Option<u64>,
-        
+
 	#[serde(rename = "ROLE_ID")]
 	role_id: Option<u64>,
 }

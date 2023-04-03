@@ -10,13 +10,13 @@ use std::sync::Arc;
 
 pub use crate::opportunities::*;
 pub use crate::pipeline_stages::*;
-pub use crate::users::*;
 pub use crate::projects::*;
+pub use crate::users::*;
 
 pub mod opportunities;
 pub mod pipeline_stages;
-pub mod users;
 pub mod projects;
+pub mod users;
 
 pub struct Insightly {
 	pub api_key_base64: String,
