@@ -13,10 +13,10 @@ pub use crate::pipeline_stages::*;
 pub use crate::users::*;
 pub use crate::projects::*;
 
-mod opportunities;
-mod pipeline_stages;
-mod users;
-mod projects;
+pub mod opportunities;
+pub mod pipeline_stages;
+pub mod users;
+pub mod projects;
 
 pub struct Insightly {
 	pub api_key_base64: String,
