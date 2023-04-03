@@ -2,6 +2,7 @@ use rocket::data::{self, Data, FromData, ToByteUnit};
 use rocket::request::Request;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::fmt::Display;
 
 /* {
   "PROJECT_ID": 0,
@@ -111,6 +112,13 @@ pub struct Project {
 
 	#[serde(rename = "LINKS")]
 	pub links: Vec<ProjectLinks>,
+}
+
+impl Display for Project {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                let project_json = serde_json::to_string(&self).unwrap();
+                write!(f, "{}", project_json)
+        }
 }
 
 #[rocket::async_trait]
