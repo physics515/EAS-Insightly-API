@@ -140,7 +140,7 @@ impl<'r> FromData<'r> for Project {
 
 		let project = match serde_json::from_str::<WorkflowAutomationProject>(&string) {
 			Ok(project) => project.entity.clone(),
-			Err(_) => return Failure((rocket::http::Status::BadRequest, "Bad Request".to_string())),
+			Err(e) => return Failure((rocket::http::Status::BadRequest, format!("Bad Request: {}", e))),
 		};
 
 		Success(project)
@@ -150,40 +150,51 @@ impl<'r> FromData<'r> for Project {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectCustomField {
 	#[serde(rename = "FIELD_NAME")]
-	pub field_name: String,
+	pub field_name: Option<String>,
 
 	#[serde(rename = "FIELD_VALUE")]
-	pub field_value: HashMap<String, String>,
+	pub field_value: Option<ProjectCustomFieldValue>,
+
+        #[serde(rename = "CUSTOM_FIELD_ID")]
+        pub custom_field_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ProjectCustomFieldValue {
+        String(String),
+        Bool(bool),
+        Number(i64),
+        Float(f64),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectLinks {
 	#[serde(rename = "LINK_ID")]
-	pub link_id: u64,
+	pub link_id: Option<u64>,
 
 	#[serde(rename = "OBJECT_NAME")]
-	pub object_name: String,
+	pub object_name: Option<String>,
 
 	#[serde(rename = "OBJECT_ID")]
-	pub object_id: u64,
+	pub object_id: Option<u64>,
 
 	#[serde(rename = "LINK_OBJECT_NAME")]
-	pub link_object_name: String,
+	pub link_object_name: Option<String>,
 
 	#[serde(rename = "LINK_OBJECT_ID")]
-	pub link_object_id: u64,
+	pub link_object_id: Option<u64>,
 
 	#[serde(rename = "ROLE")]
-	pub role: String,
+	pub role: Option<String>,
 
 	#[serde(rename = "DETAILS")]
-	pub details: String,
+	pub details: Option<String>,
 
 	#[serde(rename = "RELATIONSHIP_ID")]
-	pub relationship_id: u64,
+	pub relationship_id: Option<u64>,
 
 	#[serde(rename = "IS_FORWARD")]
-	pub is_forward: bool,
+	pub is_forward: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
