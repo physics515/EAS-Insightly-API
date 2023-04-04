@@ -128,7 +128,7 @@ impl<'r> FromData<'r> for Project {
 	async fn from_data(req: &'r Request<'_>, data: Data<'r>) -> data::Outcome<'r, Self> {
 		use rocket::outcome::Outcome::*;
 
-                let limit = req.limits().get("project").unwrap_or(1024_i32.bytes());
+                let limit = req.limits().get("project").unwrap_or(1024_i32.megabytes());
 
 		let string = match data.open(limit).into_string().await {
 			Ok(string) if string.is_complete() => string.into_inner(),
