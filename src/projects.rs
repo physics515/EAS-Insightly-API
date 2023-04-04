@@ -136,6 +136,8 @@ impl<'r> FromData<'r> for Project {
 			Err(_) => return Failure((rocket::http::Status::InternalServerError, "Internal Server Error".to_string())),
 		};
 
+                println!("Project: {}", string);
+
 		let project = match serde_json::from_str::<Project>(&string) {
 			Ok(project) => project,
 			Err(_) => return Failure((rocket::http::Status::BadRequest, "Bad Request".to_string())),
