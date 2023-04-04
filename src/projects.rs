@@ -160,6 +160,7 @@ pub struct ProjectCustomField {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum ProjectCustomFieldValue {
         String(String),
         Bool(bool),
