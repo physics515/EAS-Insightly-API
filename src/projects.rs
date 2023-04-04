@@ -54,64 +54,64 @@ pub struct Project {
 	pub project_id: u64,
 
 	#[serde(rename = "PROJECT_NAME")]
-	pub project_name: String,
+	pub project_name: Option<String>,
 
 	#[serde(rename = "STATUS")]
-	pub status: String,
+	pub status: Option<String>,
 
 	#[serde(rename = "PROJECT_DETAILS")]
-	pub project_details: String,
+	pub project_details: Option<String>,
 
 	#[serde(rename = "STARTED_DATE")]
-	pub start_date: String,
+	pub start_date: Option<String>,
 
 	#[serde(rename = "COMPLETED_DATE")]
-	pub complete_date: String,
+	pub complete_date: Option<String>,
 
 	#[serde(rename = "OPPORTUNITY_ID")]
-	pub opportunity_id: u64,
+	pub opportunity_id: Option<u64>,
 
 	#[serde(rename = "CATEGORY_ID")]
-	pub category_id: u64,
+	pub category_id: Option<u64>,
 
 	#[serde(rename = "PIPELINE_ID")]
-	pub pipeline_id: u64,
+	pub pipeline_id: Option<u64>,
 
 	#[serde(rename = "STAGE_ID")]
-	pub stage_id: u64,
+	pub stage_id: Option<u64>,
 
 	#[serde(rename = "IMAGE_URL")]
-	pub image_url: String,
+	pub image_url: Option<String>,
 
 	#[serde(rename = "OWNER_USER_ID")]
-	pub owner_user_id: u64,
+	pub owner_user_id: Option<u64>,
 
 	#[serde(rename = "DATE_CREATED_UTC")]
-	pub date_created_utc: String,
+	pub date_created_utc: Option<String>,
 
 	#[serde(rename = "DATE_UPDATED_UTC")]
-	pub date_updated_utc: String,
+	pub date_updated_utc: Option<String>,
 
 	#[serde(rename = "LAST_ACTIVITY_DATE_UTC")]
-	pub last_activity_date_utc: String,
+	pub last_activity_date_utc: Option<String>,
 
 	#[serde(rename = "NEXT_ACTIVITY_DATE_UTC")]
-	pub next_activity_date_utc: String,
+	pub next_activity_date_utc: Option<String>,
 
 	#[serde(rename = "CREATED_USER_ID")]
-	pub created_user_id: u64,
+	pub created_user_id: Option<u64>,
 
 	#[serde(rename = "RESPONSIBLE_USER_ID")]
-	pub responsible_user_id: u64,
+	pub responsible_user_id: Option<u64>,
 
 	#[serde(rename = "CUSTOMFIELDS")]
-	pub custom_fields: Vec<ProjectCustomField>,
+	pub custom_fields: Option<Vec<ProjectCustomField>>,
 
 	#[serde(rename = "TAGS")]
-	pub tags: Vec<HashMap<String, String>>,
+	pub tags: Option<Vec<HashMap<String, String>>>,
 
 	#[serde(rename = "LINKS")]
-	pub links: Vec<ProjectLinks>,
+	pub links: Option<Vec<ProjectLinks>>,
 }
 
 impl Display for Project {
@@ -138,8 +138,8 @@ impl<'r> FromData<'r> for Project {
 
                 println!("Project: {}", string);
 
-		let project = match serde_json::from_str::<Project>(&string) {
-			Ok(project) => project,
+		let project = match serde_json::from_str::<WorkflowAutomationProject>(&string) {
+			Ok(project) => project.entity.clone(),
 			Err(_) => return Failure((rocket::http::Status::BadRequest, "Bad Request".to_string())),
 		};
 
@@ -184,4 +184,9 @@ pub struct ProjectLinks {
 
 	#[serde(rename = "IS_FORWARD")]
 	pub is_forward: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WorkflowAutomationProject {
+        pub entity: Project,
 }
