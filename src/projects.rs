@@ -136,8 +136,6 @@ impl<'r> FromData<'r> for Project {
 			Err(_) => return Failure((rocket::http::Status::InternalServerError, "Internal Server Error".to_string())),
 		};
 
-                println!("Project: {}", string);
-
 		let project = match serde_json::from_str::<WorkflowAutomationProject>(&string) {
 			Ok(project) => project.entity.clone(),
 			Err(e) => return Failure((rocket::http::Status::BadRequest, format!("Bad Request: {}", e))),
