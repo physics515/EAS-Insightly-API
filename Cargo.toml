@@ -11,5 +11,5 @@ azure_identity = "*"
 base64 = "*"
 reqwest = { version = "*", features = ["cookies", "blocking", "json", "rustls-tls"] }
 serde = { version = "*", features = ["derive"] }
-rocket = { git = "https://github.com/SergioBenitez/Rocket", rev = "91f6288", features=['json'] }
+rocket = { version = "*", features=['json'] }
 serde_json = "*"

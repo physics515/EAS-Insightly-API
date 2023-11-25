@@ -1,8 +1,9 @@
+use std::collections::HashMap;
+use std::fmt::Display;
+
 use rocket::data::{self, Data, FromData, ToByteUnit};
 use rocket::request::Request;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::fmt::Display;
 
 /* {
   "PROJECT_ID": 0,
@@ -115,30 +116,30 @@ pub struct Project {
 }
 
 impl Display for Project {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                let project_json = serde_json::to_string(&self).unwrap();
-                write!(f, "{}", project_json)
-        }
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		let project_json = serde_json::to_string(&self).unwrap();
+		write!(f, "{}", project_json)
+	}
 }
 
 #[rocket::async_trait]
 impl<'r> FromData<'r> for Project {
-        type Error = String;
+	type Error = String;
 
 	async fn from_data(req: &'r Request<'_>, data: Data<'r>) -> data::Outcome<'r, Self> {
 		use rocket::outcome::Outcome::*;
 
-                let limit = req.limits().get("project").unwrap_or(1024_i32.megabytes());
+		let limit = req.limits().get("project").unwrap_or(1024_i32.megabytes());
 
 		let string = match data.open(limit).into_string().await {
 			Ok(string) if string.is_complete() => string.into_inner(),
-			Ok(_) => return Failure((rocket::http::Status::PayloadTooLarge, "Payload too large".to_string())),
-			Err(_) => return Failure((rocket::http::Status::InternalServerError, "Internal Server Error".to_string())),
+			Ok(_) => return Error((rocket::http::Status::PayloadTooLarge, "Payload too large".to_string())),
+			Err(_) => return Error((rocket::http::Status::InternalServerError, "Internal Server Error".to_string())),
 		};
 
 		let project = match serde_json::from_str::<WorkflowAutomationProject>(&string) {
 			Ok(project) => project.entity.clone(),
-			Err(e) => return Failure((rocket::http::Status::BadRequest, format!("Bad Request: {}", e))),
+			Err(e) => return Error((rocket::http::Status::BadRequest, format!("Bad Request: {}", e))),
 		};
 
 		Success(project)
@@ -153,17 +154,17 @@ pub struct ProjectCustomField {
 	#[serde(rename = "FIELD_VALUE")]
 	pub field_value: Option<ProjectCustomFieldValue>,
 
-        #[serde(rename = "CUSTOM_FIELD_ID")]
-        pub custom_field_id: Option<String>,
+	#[serde(rename = "CUSTOM_FIELD_ID")]
+	pub custom_field_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ProjectCustomFieldValue {
-        String(String),
-        Bool(bool),
-        Number(i64),
-        Float(f64),
+	String(String),
+	Bool(bool),
+	Number(i64),
+	Float(f64),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -198,5 +199,5 @@ pub struct ProjectLinks {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorkflowAutomationProject {
-        pub entity: Project,
+	pub entity: Project,
 }

@@ -1,12 +1,11 @@
+use std::sync::Arc;
+
 use azure_identity::ImdsManagedIdentityCredential;
 use azure_security_keyvault::KeyvaultClient;
 use base64::{
-	alphabet,
-	engine::{self, general_purpose},
-	Engine as _,
+	alphabet, engine::{self, general_purpose}, Engine as _
 };
 use reqwest::header::HeaderValue;
-use std::sync::Arc;
 
 pub use crate::opportunities::*;
 pub use crate::pipeline_stages::*;
