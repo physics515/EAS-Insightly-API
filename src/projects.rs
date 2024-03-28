@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 use std::fmt::Display;
 
-use rocket::data::{self, Data, FromData, ToByteUnit};
+use rocket::data::FromData;
+use rocket::data::{self, Data, ToByteUnit};
 use rocket::request::Request;
 use serde::{Deserialize, Serialize};
 
