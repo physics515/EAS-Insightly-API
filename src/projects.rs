@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 use std::fmt::Display;
 
+use rocket::data;
 use rocket::data::FromData;
-use rocket::data::{self, Data, ToByteUnit};
-use rocket::request::Request;
+use rocket::data::ToByteUnit;
+use rocket::Data;
+use rocket::Request;
 use serde::{Deserialize, Serialize};
 
 /* {
@@ -119,7 +121,7 @@ pub struct Project {
 impl Display for Project {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		let project_json = serde_json::to_string(&self).unwrap();
-		write!(f, "{}", project_json)
+		write!(f, "{project_json}")
 	}
 }
 
@@ -128,9 +130,9 @@ impl<'r> FromData<'r> for Project {
 	type Error = String;
 
 	async fn from_data(req: &'r Request<'_>, data: Data<'r>) -> data::Outcome<'r, Self> {
-		use rocket::outcome::Outcome::*;
+		use rocket::outcome::Outcome::{Error, Success};
 
-		let limit = req.limits().get("project").unwrap_or(1024_i32.megabytes());
+		let limit = req.limits().get("project").unwrap_or_else(|| 1024_i32.megabytes());
 
 		let string = match data.open(limit).into_string().await {
 			Ok(string) if string.is_complete() => string.into_inner(),
@@ -139,8 +141,8 @@ impl<'r> FromData<'r> for Project {
 		};
 
 		let project = match serde_json::from_str::<WorkflowAutomationProject>(&string) {
-			Ok(project) => project.entity.clone(),
-			Err(e) => return Error((rocket::http::Status::BadRequest, format!("Bad Request: {}", e))),
+			Ok(project) => project.entity,
+			Err(e) => return Error((rocket::http::Status::BadRequest, format!("Bad Request: {e}"))),
 		};
 
 		Success(project)
